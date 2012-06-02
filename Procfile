@@ -1,1 +1,1 @@
-web: shotgun web/app.rb -p $PORT
+web: shotgun web/app.rb -p $PORT -o 0.0.0.0
