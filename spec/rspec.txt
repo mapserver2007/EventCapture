@@ -1,7 +1,0 @@
-
-EventCapture が実行する処理
-  サンプル
-[32m    とりあえずテストが成功すること[0m
-
-Finished in 0.0014 seconds
-[32m1 example, 0 failures[0m
