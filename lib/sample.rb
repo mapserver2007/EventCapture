@@ -5,5 +5,9 @@ module EventCapture
     def run
       "ok"
     end
+    
+    def call
+      puts "job called"
+    end
   end
 end
