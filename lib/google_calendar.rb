@@ -26,6 +26,7 @@ module EventCapture
     def save
       @queue.each_with_index do |e, i|
         event = @calendar.events[i]
+        next if event == nil
         event.title = e[:title]
         event.desc = e[:desc]
         event.where = e[:where]
