@@ -6,7 +6,7 @@ module EventCapture
   class << self
     def auth
       path = File.dirname(__FILE__) + "/../config/auth.yml"
-      auth = YAML.load_file(path)
+      YAML.load_file(path)
     end
     
     def calendar_test_data

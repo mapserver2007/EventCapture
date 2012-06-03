@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 require File.dirname(__FILE__) + '/google_calendar'
+require File.dirname(__FILE__) + '/modules/runnet'
 
 module EventCapture
   class Sample
@@ -8,33 +9,18 @@ module EventCapture
       "job called"
     end
     
-    def calendar_add
-      calendar = EventCapture::Calendar.new
-      calendar.add({
-        :title => "てすと",
-        :desc => "かれんだーてすと",
-        :where => "東京ビッグサイト",
-        :date => [2012, 6, 6]
-      }).save
-    end
-    
-    def calendar_delete()
-      calendar = EventCapture::Calendar.new
-      calendar.add({
-        :title => "てすと",
-        :desc => "かれんだーてすと",
-        :where => "東京ビッグサイト",
-        :date => [2012, 6, 6]
-      }).delete
-      
-      
+    def scrape
+      obj = EventCapture::Module::Runnet.new
+      list = obj.run
+      require 'pp'
+      pp list
     end
     
   end
 end
 
 sample = EventCapture::Sample.new
-sample.calendar_add
+sample.scrape
 #sample.calendar_delete
 #sample.calendar_search("summer")
 

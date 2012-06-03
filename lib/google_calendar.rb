@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 require 'gcalapi'
-require 'yaml'
 require 'parallel_runner'
 
 module EventCapture
