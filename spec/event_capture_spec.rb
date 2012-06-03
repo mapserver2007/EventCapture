@@ -7,7 +7,7 @@ describe EventCapture, 'が実行する処理' do
       @instance = EventCapture::Sample.new
     end
     it "とりあえずテストが成功すること" do
-      @instance.run.should == "ok"
+      @instance.call.should == "job called"
     end
   end
 end

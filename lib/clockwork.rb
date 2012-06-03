@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 require 'clockwork'
-require 'sample'
+require File.dirname(__FILE__) + '/sample'
 
 include Clockwork
 
