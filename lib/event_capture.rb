@@ -6,7 +6,7 @@ require 'yaml'
 
 module EventCapture
   VERSION = '0.0.1'
-  
+
   class << self
     include EventCaptureModule
     

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 require 'gcalapi'
-require 'parallel_runner'
 
 module EventCapture
   class Calendar
@@ -25,7 +24,7 @@ module EventCapture
     
     def save
       @queue.each_with_index do |e, i|
-        event = @calendar.events[i]
+        event = @calendar.events[i] || @calendar.create_event
         next if event == nil
         event.title = e[:title]
         event.desc = e[:desc]
@@ -43,6 +42,7 @@ module EventCapture
     def delete
       @queue.each_with_index do |e, i|
         event = @calendar.events[i]
+        next if event == nil
         event.destroy!
         puts "delete: #{e}"
       end
