@@ -24,6 +24,8 @@ describe EventCapture, 'が実行する処理' do
         invalid_calendar.add(data).save
       }.should raise_error(GoogleCalendar::AuthenticationFailed)
     end
+    
+    
   end
 end
 

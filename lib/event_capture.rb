@@ -1,36 +1,45 @@
 # -*- coding: utf-8 -*-
-require File.dirname(__FILE__) + '/google_calendar'
-require File.dirname(__FILE__) + '/modules/runnet'
+require 'google_calendar'
+#require 'modules/runnet'
 require 'parallel_runner'
 require 'yaml'
+require 'active_support'
 
 module EventCapture
   VERSION = '0.0.1'
 
   class << self
-    include EventCaptureModule
-    
-    def auth
-      path = File.dirname(__FILE__) + "/../config/auth.yml"
-      YAML.load_file(path)
+    # モジュールのロード
+    def load_module
+      Dir::entries("lib/modules").each_with_object [] do |file, list|
+        next if file == "." || file == ".."
+        file = File.basename(file, ".rb").split("_").each_with_object "" do |module_name, str|
+          require 'modules/' + module_name
+          str << module_name.capitalize
+        end
+        list << "EventCaptureModule::" + file
+      end
     end
     
+    # クローラ
     def crawler
-      modules = [Runnet]
       path = File.dirname(__FILE__) + "/../config/auth.yml"
       auth = YAML.load_file(path)
       calendar = EventCapture::Calendar.new(auth["mail"], auth["pass"])
       
-      Runner.parallel(modules) do |m|
-        list = m.send(:new).run
+      Runner.parallel(load_module) do |m|
+        list = m.constantize.send(:new).run
         list.each do |data|
           calendar.add(data)
         end
         calendar.save
       end
-      
     end
   end
 end
 
-EventCapture.crawler
+class String
+  def constantize
+    ActiveSupport::Inflector.constantize(self)
+  end
+end

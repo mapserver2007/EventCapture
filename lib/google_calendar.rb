@@ -2,6 +2,8 @@
 require 'gcalapi'
 
 module EventCapture
+  class SystemError < StandardError; end
+  
   class Calendar
     GOOGLE_CALENDAR_FEED = "http://www.google.com/calendar/feeds/%s/private/full"
     
@@ -25,7 +27,7 @@ module EventCapture
     def save
       @queue.each_with_index do |e, i|
         event = @calendar.events[i] || @calendar.create_event
-        next if event == nil
+        raise SystemError if event == nil
         event.title = e[:title]
         event.desc = e[:desc]
         event.where = e[:where]
@@ -42,7 +44,7 @@ module EventCapture
     def delete
       @queue.each_with_index do |e, i|
         event = @calendar.events[i]
-        next if event == nil
+        raise SystemError if event == nil
         event.destroy!
         puts "delete: #{e}"
       end
