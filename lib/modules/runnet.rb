@@ -9,8 +9,9 @@ module EventCaptureModule
     # 最大取得ページ数
     MAX_PAGE = 10
     
-    def initialize
+    def initialize(is_print = false)
       @result = []
+      @is_print = is_print
     end
     
     def run
@@ -48,7 +49,7 @@ module EventCaptureModule
             :where => where,
             :date => date
           }
-          puts "data: #{data}"
+          puts "data: #{data}" if @is_print
           # リストにセット
           @result << data
         end

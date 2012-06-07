@@ -25,7 +25,10 @@ describe EventCapture, 'が実行する処理' do
       }.should raise_error(GoogleCalendar::AuthenticationFailed)
     end
     
-    
+    it "runnet.jpからデータを取得できること" do
+      list = EventCaptureModule::Runnet.new().run
+      list.should_not be_empty
+    end
   end
 end
 

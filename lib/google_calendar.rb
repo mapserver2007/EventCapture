@@ -7,7 +7,8 @@ module EventCapture
   class Calendar
     GOOGLE_CALENDAR_FEED = "http://www.google.com/calendar/feeds/%s/private/full"
     
-    def initialize(mail, pass)
+    def initialize(mail, pass, is_print = false)
+      @is_print = is_print
       feed = GOOGLE_CALENDAR_FEED % mail
       @calendar = GoogleCalendar::Calendar.new(
         GoogleCalendar::Service.new(mail, pass), feed
@@ -35,7 +36,7 @@ module EventCapture
         event.en = event.st
         event.allday = true
         res = event.save!
-        puts "save: #{e}"
+        puts "save: #{e}" if @is_print
       end
       clear
       true
@@ -46,7 +47,7 @@ module EventCapture
         event = @calendar.events[i]
         raise SystemError if event == nil
         event.destroy!
-        puts "delete: #{e}"
+        puts "delete: #{e}" if @is_print
       end
       clear
       true

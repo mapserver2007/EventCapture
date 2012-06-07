@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 require 'google_calendar'
-#require 'modules/runnet'
 require 'parallel_runner'
 require 'yaml'
 require 'active_support'
@@ -22,13 +21,13 @@ module EventCapture
     end
     
     # クローラ
-    def crawler
+    def crawler(config)
       path = File.dirname(__FILE__) + "/../config/auth.yml"
       auth = YAML.load_file(path)
-      calendar = EventCapture::Calendar.new(auth["mail"], auth["pass"])
+      calendar = EventCapture::Calendar.new(auth["mail"], auth["pass"], config[:print])
       
       Runner.parallel(load_module) do |m|
-        list = m.constantize.send(:new).run
+        list = m.constantize.send(:new, config[:print]).run()
         list.each do |data|
           calendar.add(data)
         end
