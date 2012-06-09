@@ -31,7 +31,7 @@ module EventCapture
     def crawler
       Runner.parallel(load_module) do |m|
         begin
-          list = m.constantize.send(:new).run() do |data|
+          list = m.constantize.send(:new).run do |data|
             puts "data: #{data}" if @is_print
           end
           list.each do |data|
@@ -48,7 +48,7 @@ module EventCapture
     def run(config)
       @is_print = config[:print]
       calendar
-      if block_given?
+      if config[:clock_time]
         yield config[:clock_time]
       else
         crawler

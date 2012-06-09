@@ -5,11 +5,11 @@ require 'parallel_runner'
 module EventCaptureModule
   class Runnet
     # エントリー開始大会情報
-    URL = "http://runnet.jp/runtes/newcomer.php?_page=%s"
+    URL = "http://bit.ly/Ml4ZBM"
     # 最大取得ページ数
     MAX_PAGE = 10
     
-    def initialize()
+    def initialize
       @result = []
     end
     
