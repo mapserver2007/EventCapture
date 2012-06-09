@@ -9,9 +9,8 @@ module EventCaptureModule
     # 最大取得ページ数
     MAX_PAGE = 10
     
-    def initialize(is_print = false)
+    def initialize()
       @result = []
-      @is_print = is_print
     end
     
     def run
@@ -21,6 +20,7 @@ module EventCaptureModule
       Runner.parallel(url_list) do |url|
         crawle_to url
       end
+      @result.each {|data| yield data}
       @result
     end
     
@@ -49,7 +49,6 @@ module EventCaptureModule
             :where => where,
             :date => date
           }
-          puts "data: #{data}" if @is_print
           # リストにセット
           @result << data
         end

@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-require 'google_calendar'
+require 'clockwork'
+require 'active_support'
 require 'parallel_runner'
 require 'yaml'
-require 'active_support'
+require 'google_calendar'
 
 module EventCapture
   VERSION = '0.0.1'
-
+  
   class << self
     # モジュールのロード
     def load_module
@@ -20,15 +21,24 @@ module EventCapture
       end
     end
     
-    # クローラ
-    def crawler(config)
+    # カレンダーオブジェクトを取得
+    def calendar2
       path = File.dirname(__FILE__) + "/../config/auth.yml"
       auth = YAML.load_file(path)
-      calendar = EventCapture::Calendar.new(auth["mail"], auth["pass"], config[:print])
+      EventCapture::Calendar.new(auth["mail"], auth["pass"], @config[:print])
+    end
+    
+    # クローラ
+    def crawler()
+      path = File.dirname(__FILE__) + "/../config/auth.yml"
+      auth = YAML.load_file(path)
+      calendar = EventCapture::Calendar.new(auth["mail"], auth["pass"], @config[:print])
       
       Runner.parallel(load_module) do |m|
         begin
-          list = m.constantize.send(:new, config[:print]).run()
+          list = m.constantize.send(:new).run() do |data|
+            puts "data: #{data}" if @config[:print]
+          end
           list.each do |data|
             calendar.add(data)
           end
@@ -38,6 +48,14 @@ module EventCapture
         end
       end
     end
+    
+    def run(config)
+      @config = config
+      p config
+      crawler
+      #every(config[:clock_time].seconds, crawler)
+    end
+    
   end
 end
 

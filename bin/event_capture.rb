@@ -5,7 +5,12 @@ require 'optparse'
 
 config = {}
 OptionParser.new do |opt|
+  opt.on('-c', '--clock CLOCK') {|time| config[:clock_time] = time}
   opt.on('-p', '--print') {|boolean| config[:print] = boolean}
+  opt.parse!
 end
 
-EventCapture.crawler(config)
+EventCapture.run(config)
+
+
+#EventCapture.crawler(config)

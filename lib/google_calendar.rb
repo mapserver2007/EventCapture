@@ -35,7 +35,7 @@ module EventCapture
         event.st = Time.mktime(*e[:date])
         event.en = event.st
         event.allday = true
-        res = event.save!
+        event.save!
         puts "save: #{e}" if @is_print
       end
       clear
