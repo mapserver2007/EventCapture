@@ -27,11 +27,15 @@ module EventCapture
       calendar = EventCapture::Calendar.new(auth["mail"], auth["pass"], config[:print])
       
       Runner.parallel(load_module) do |m|
-        list = m.constantize.send(:new, config[:print]).run()
-        list.each do |data|
-          calendar.add(data)
+        begin
+          list = m.constantize.send(:new, config[:print]).run()
+          list.each do |data|
+            calendar.add(data)
+          end
+          calendar.save
+        rescue => e
+          puts e.message
         end
-        calendar.save
       end
     end
   end

@@ -1,7 +1,7 @@
 require 'rspec'
 require 'yaml'
+require File.dirname(__FILE__) + "/../lib/event_capture"
 require File.dirname(__FILE__) + "/../lib/google_calendar"
-require File.dirname(__FILE__) + "/../lib/modules/runnet"
 
 module EventCapture
   class << self

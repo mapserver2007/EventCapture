@@ -25,9 +25,19 @@ describe EventCapture, 'が実行する処理' do
       }.should raise_error(GoogleCalendar::AuthenticationFailed)
     end
     
-    it "runnet.jpからデータを取得できること" do
-      list = EventCaptureModule::Runnet.new().run
-      list.should_not be_empty
+    it "各モジュールからデータを取得できること" do
+      EventCapture.load_module.each do |m|
+        list = m.constantize.send(:new, false).run()
+        list.should_not be_empty
+        list.each do |data|
+          data[:title].should_not be_nil
+          data[:desc].should_not be_nil
+          data[:where].should_not be_nil
+          data[:date][0].should match(/^\d{4}$/)
+          data[:date][1].should match(/^\d{1,2}$/)
+          data[:date][2].should match(/^\d{1,2}$/)
+        end
+      end
     end
   end
 end
