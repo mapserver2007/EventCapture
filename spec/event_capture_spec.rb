@@ -27,7 +27,7 @@ describe EventCapture, 'が実行する処理' do
     
     it "各モジュールからデータを取得できること" do
       EventCapture.load_module.each do |m|
-        list = m.constantize.send(:new, false).run()
+        list = m.constantize.send(:new).run
         list.should_not be_empty
         list.each do |data|
           data[:title].should_not be_nil

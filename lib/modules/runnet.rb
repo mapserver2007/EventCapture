@@ -20,7 +20,7 @@ module EventCaptureModule
       Runner.parallel(url_list) do |url|
         crawle_to url
       end
-      @result.each {|data| yield data}
+      @result.each {|data| yield data if block_given?}
       @result
     end
     

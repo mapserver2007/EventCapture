@@ -48,7 +48,11 @@ module EventCapture
     def run(config)
       @is_print = config[:print]
       calendar
-      yield config[:clock_time]
+      if block_given?
+        yield config[:clock_time]
+      else
+        crawler
+      end
     end
   end
 end
