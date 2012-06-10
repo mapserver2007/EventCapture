@@ -4,8 +4,10 @@ require 'parallel_runner'
 
 module EventCaptureModule
   class Runnet
+    # runnet.jp
+    URL = "http://runnet.jp"
     # エントリー開始大会情報
-    URL = "http://runnet.jp/runtes/newcomer.php?_page=%s"
+    NEW_ENTRY_URL = URL + "/runtes/newcomer.php?_page=%s"
     # 最大取得ページ数
     MAX_PAGE = 10
     
@@ -15,7 +17,7 @@ module EventCaptureModule
     
     def run
       url_list = []
-      1.upto(MAX_PAGE) {|page| url_list << URL % page }
+      1.upto(MAX_PAGE) {|page| url_list << NEW_ENTRY_URL % page }
       # 並列で取得
       Runner.parallel(url_list) do |url|
         crawle_to url
@@ -41,13 +43,17 @@ module EventCaptureModule
           end
           # 場所
           where = line.search("td[2]").text
-          # タイトル、詳細
-          race_name = desc = line.search("td[3]").text
+          # タイトル
+          title = line.search("td[3]").text
+          # 詳細
+          desc = ""
+          line.search("td[3] > a").map {|a| desc = URL + a["href"]}
           data = {
-            :title => race_name,
+            :title => "#{title}",
             :desc => desc,
             :where => where,
-            :date => date
+            :date => date,
+            :tag => "#event_capture_runnet"
           }
           # リストにセット
           @result << data

@@ -31,3 +31,4 @@ SCCS
 _$*
 _svn
 config/auth.yml
+config/twitter.yml

@@ -42,10 +42,11 @@ module EventCaptureModule
           expected_val = threshold(td.search("td[4]").text)
           next if THRESHOLD > expected_val || title == "" || desc == ""
           data = {
-            :title => title,
+            :title => "#{title}",
             :desc => "メーカ: #{desc} 得点: #{expected_val}",
             :where => "",
-            :date => date
+            :date => date,
+            :tag => "#event_capture_eroge"
           }
           # リストにセット
           @result << data

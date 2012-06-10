@@ -3,6 +3,7 @@ require 'active_support'
 require 'parallel_runner'
 require 'yaml'
 require 'google_calendar'
+require 'tweet'
 
 module EventCapture
   VERSION = '0.0.1'
@@ -30,19 +31,49 @@ module EventCapture
     def calendar
       path = File.dirname(__FILE__) + "/../config/auth.yml"
       auth = YAML.load_file(path)
-      EventCapture::Calendar.new(auth["mail"], auth["pass"], @debug)
+      Calendar.new(auth["mail"], auth["pass"], @debug)
+    end
+    
+    # Twitterオブジェクトを作成
+    def twitter
+      path = File.dirname(__FILE__) + "/../config/twitter.yml"
+      auth = YAML.load_file(path)
+      Tweet.new(auth)
+    end
+    
+    # ツイート
+    def tweet_to(list)
+      list.each do |data|
+        begin
+          data[:date] = data[:date].join("/")
+          tag = data[:tag]
+          data.delete(:tag)
+          data = data.values.reject{|e| e == ""}
+          context = data.join(", ") + "\s#{tag}"
+          @twitter.post(context) do |url|
+            puts "twitter: #{url}" if @debug
+          end
+        rescue Twitter::Error::Forbidden
+          next
+        end
+      end
     end
     
     # クローラ
     def crawler
+      @twitter = twitter
       Runner.parallel(load_module) do |m|
         begin
-          cal = calendar
+          # データ取得
           list = m.constantize.send(:new).run do |data|
             puts "data: #{data}" if @debug
           end
-          list.each {|data| cal.add(data)}
-          cal.save
+          # カレンダー登録
+          cal = calendar
+          data = cal.unregistered list
+          cal.save data
+          # Twitter投稿
+          tweet_to data
         rescue => e
           puts e.message
         end
@@ -52,7 +83,8 @@ module EventCapture
     # 起動する
     def run(config)
       @debug = config[:debug]
-      yield clock
+      crawler
+      #yield clock
     end
   end
 end

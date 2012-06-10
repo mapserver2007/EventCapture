@@ -13,31 +13,24 @@ module EventCapture
       @calendar = GoogleCalendar::Calendar.new(
         GoogleCalendar::Service.new(mail, pass), feed
       )
-      clear
     end
     
-    def add(data)
-      @queue << data
-      @title_queue << data[:title]
-      self
-    end
-    
-    def clear
-      @queue = []
-      @title_queue = []
-    end
-    
-    def save
-      # すでに登録済みのイベントならQueueから削除する
+    def unregistered(list)
+      title_queue = []
+      list.each {|data| title_queue << data[:title]}
+      # すでに登録済みのイベントならQueueにセットしない
       @calendar.events.each do |event|
-        index = @title_queue.index(event.title)
+        index = title_queue.index(event.title)
         unless index.nil?
-          @queue.delete_at index
-          @title_queue.delete_at index
+          list.delete_at index
+          title_queue.delete_at index
         end
       end
-      
-      @queue.each do |e|
+      list
+    end
+    
+    def save(queue)
+      queue.each do |e|
         event = @calendar.create_event
         event.title = e[:title]
         event.desc = e[:desc]
@@ -48,18 +41,19 @@ module EventCapture
         event.save!
         puts "save: #{e}" if @is_print
       end
-      clear
       true
     end
     
-    def delete
-      @queue.each_with_index do |e, i|
-        event = @calendar.events[i]
-        raise SystemError if event == nil
-        event.destroy!
-        puts "delete: #{e}" if @is_print
+    def delete(list)
+      title_queue = []
+      list.each {|data| title_queue << data[:title]}
+      @calendar.events do |event|
+        index = title_queue.index(event.title)
+        unless index.nil?
+          event.destroy!
+          puts "delete: #{e}" if @is_print
+        end
       end
-      clear
       true
     end
   end
