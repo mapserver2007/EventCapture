@@ -18,17 +18,27 @@ module EventCapture
     
     def add(data)
       @queue << data
+      @title_queue << data[:title]
       self
     end
     
     def clear
       @queue = []
+      @title_queue = []
     end
     
     def save
-      @queue.each_with_index do |e, i|
-        event = @calendar.events[i] || @calendar.create_event
-        raise SystemError if event == nil
+      # すでに登録済みのイベントならQueueから削除する
+      @calendar.events.each do |event|
+        index = @title_queue.index(event.title)
+        unless index.nil?
+          @queue.delete_at index
+          @title_queue.delete_at index
+        end
+      end
+      
+      @queue.each do |e|
+        event = @calendar.create_event
         event.title = e[:title]
         event.desc = e[:desc]
         event.where = e[:where]

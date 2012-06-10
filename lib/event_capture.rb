@@ -24,20 +24,19 @@ module EventCapture
     def calendar
       path = File.dirname(__FILE__) + "/../config/auth.yml"
       auth = YAML.load_file(path)
-      @calendar = EventCapture::Calendar.new(auth["mail"], auth["pass"], @is_print)
+      EventCapture::Calendar.new(auth["mail"], auth["pass"], @is_print)
     end
     
     # クローラ
     def crawler
       Runner.parallel(load_module) do |m|
         begin
+          cal = calendar
           list = m.constantize.send(:new).run do |data|
             puts "data: #{data}" if @is_print
           end
-          list.each do |data|
-            @calendar.add(data)
-          end
-          @calendar.save
+          list.each {|data| cal.add(data)}
+          cal.save
         rescue => e
           puts e.message
         end
