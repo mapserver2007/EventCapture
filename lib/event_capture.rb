@@ -20,11 +20,17 @@ module EventCapture
       end
     end
     
+    # clockwork実行時間設定
+    def clock
+      path = File.dirname(__FILE__) + "/../config/clock.yml"
+      YAML.load_file(path)
+    end
+    
     # カレンダーオブジェクト作成
     def calendar
       path = File.dirname(__FILE__) + "/../config/auth.yml"
       auth = YAML.load_file(path)
-      EventCapture::Calendar.new(auth["mail"], auth["pass"], @is_print)
+      EventCapture::Calendar.new(auth["mail"], auth["pass"], @debug)
     end
     
     # クローラ
@@ -33,7 +39,7 @@ module EventCapture
         begin
           cal = calendar
           list = m.constantize.send(:new).run do |data|
-            puts "data: #{data}" if @is_print
+            puts "data: #{data}" if @debug
           end
           list.each {|data| cal.add(data)}
           cal.save
@@ -45,13 +51,8 @@ module EventCapture
     
     # 起動する
     def run(config)
-      @is_print = config[:print]
-      calendar
-      if config[:clock_time]
-        yield config[:clock_time]
-      else
-        crawler
-      end
+      @debug = config[:debug]
+      yield clock
     end
   end
 end
