@@ -21,23 +21,28 @@ module EventCapture
       end
     end
     
+    # 設定のロード
+    def load_config(path)
+      ENV || YAML.load_file(path)
+    end
+    
     # clockwork実行時間設定
     def clock
       path = File.dirname(__FILE__) + "/../config/clock.yml"
-      YAML.load_file(path)
+      load_config(path)
     end
     
     # カレンダーオブジェクト作成
     def calendar
       path = File.dirname(__FILE__) + "/../config/auth.yml"
-      auth = YAML.load_file(path)
+      auth = load_config(path)
       Calendar.new(auth["mail"], auth["pass"], @debug)
     end
     
     # Twitterオブジェクトを作成
     def twitter
       path = File.dirname(__FILE__) + "/../config/twitter.yml"
-      auth = YAML.load_file(path)
+      auth = load_config(path)
       Tweet.new(auth)
     end
     
@@ -83,8 +88,7 @@ module EventCapture
     # 起動する
     def run(config)
       @debug = config[:debug]
-      crawler
-      #yield clock
+      yield clock
     end
   end
 end

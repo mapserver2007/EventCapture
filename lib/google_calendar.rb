@@ -2,8 +2,6 @@
 require 'gcalapi'
 
 module EventCapture
-  class SystemError < StandardError; end
-  
   class Calendar
     GOOGLE_CALENDAR_FEED = "http://www.google.com/calendar/feeds/%s/private/full"
     
