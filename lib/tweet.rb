@@ -10,6 +10,7 @@ module EventCapture
     def initialize(params)
       auth(params)
       @client = Twitter::Client.new
+      @user = params["send_to"]
     end
 
     def post(msg)
@@ -17,6 +18,12 @@ module EventCapture
       result = @client.update(msg)
       url = TIMELINE_URL % [result["user"]["name"], result["id"]]
       yield url if block_given?
+    end
+    
+    def dm(msg)
+      msg = msg.to_s.force_encoding(Encoding::ASCII_8BIT)
+      result = @client.direct_message_create(@user, msg)
+      yield result["text"] if block_given?
     end
 
     def auth(params)

@@ -49,6 +49,12 @@ describe EventCapture, 'が実行する処理' do
         client.get(location_url).status.should == 200
       end
     end
+    
+    it "Twitterでダイレクトメッセージを送れること" do
+      twitter.dm(Time.now.to_s) do |text|
+        text.should_not be_nil
+      end
+    end
   end
 end
 

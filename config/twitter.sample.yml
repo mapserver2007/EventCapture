@@ -1,4 +1,5 @@
 # your Twitter keys
+send_to: twitter account name
 consumer_key: your consumer key
 consumer_secret: your consumer secret
 oauth_token: your oauth token
