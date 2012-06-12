@@ -8,7 +8,7 @@ require File.dirname(__FILE__) + "/../lib/tweet"
 module EventCapture
   class << self
     def calendar_auth
-      path = File.dirname(__FILE__) + "/../config/auth.yml"
+      path = File.dirname(__FILE__) + "/../config/gcal.yml"
       YAML.load_file(path)
     end
     
