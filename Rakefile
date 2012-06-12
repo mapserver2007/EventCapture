@@ -1,4 +1,6 @@
+# -*- coding: utf-8 -*-
 require 'rspec/core/rake_task'
+require 'yaml'
 
 task:default => [:spec, :github_push, :heroku_deploy]
 
@@ -15,6 +17,11 @@ task :heroku_deploy => [:github_push] do
   sh 'git push heroku master'
 end
 
-# task :heroku_open => [:heroku_deploy] do
-  # sh 'heroku open'
-# end
+task :heroku_env do
+  gcal = YAML.load_file(File.dirname(__FILE__) + "/config/gcal.yml")
+  twitter = YAML.load_file(File.dirname(__FILE__) + "/config/twitter.yml")
+  config = gcal.merge(twitter)
+  config.each do |key, value|
+    sh "heroku config:add #{key}=#{value}"
+  end
+end

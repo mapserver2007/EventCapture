@@ -30,5 +30,5 @@ RCSLOG
 SCCS
 _$*
 _svn
-config/auth.yml
+config/gcal.yml
 config/twitter.yml
