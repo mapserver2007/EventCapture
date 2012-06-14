@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 require 'mechanize'
-require 'parallel_runner'
 
 module EventCaptureModule
   class Eroge

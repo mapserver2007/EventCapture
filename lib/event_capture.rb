@@ -6,24 +6,27 @@ require 'google_calendar'
 require 'tweet'
 
 module EventCapture
-  VERSION = '0.0.1'
+  VERSION = '0.0.2'
   
   class << self
     # モジュールのロード
-    def load_module
+    def load_module(plugin)
+      require 'modules/' + plugin
+      file = plugin.split("_").each_with_object("") {|m, str| str << m.capitalize}
+      "EventCaptureModule::" + file
+    end
+    
+    # モジュールの一覧を取得
+    def module_list
       Dir::entries("lib/modules").each_with_object [] do |file, list|
         next if file == "." || file == ".."
-        file = File.basename(file, ".rb").split("_").each_with_object "" do |module_name, str|
-          require 'modules/' + module_name
-          str << module_name.capitalize
-        end
-        list << "EventCaptureModule::" + file
+        list << file.gsub(".rb", "")
       end
     end
     
     # 設定のロード
     def load_config(path)
-      ENV || YAML.load_file(path)
+      File.exists?(path) ? YAML.load_file(path) : ENV
     end
     
     # clockwork実行時間設定
@@ -43,12 +46,14 @@ module EventCapture
     def twitter
       path = File.dirname(__FILE__) + "/../config/twitter.yml"
       auth = load_config(path)
+      @user = auth[:send_to]
       Tweet.new(auth)
     end
     
     # ツイート
     def tweet_to(list)
-      list.each do |data|
+      @twitter = twitter
+      Runner.parallel do |data|
         begin
           data[:date] = data[:date].join("/")
           tag = data[:tag]
@@ -56,7 +61,7 @@ module EventCapture
           data = data.values.reject{|e| e == ""}
           context = data.join(", ") + "\s#{tag}"
           @twitter.post(context) {|url| puts "twitter: #{url}" if @debug}
-          @twitter.dm(context) {|url| puts "DM: #{text}" if @debug}
+          @twitter.dm(@user, context) {|url| puts "DM: #{text}" if @debug}
         rescue Twitter::Error::Forbidden
           next
         end
@@ -64,30 +69,35 @@ module EventCapture
     end
     
     # クローラ
-    def crawler
-      @twitter = twitter
-      Runner.parallel(load_module) do |m|
-        begin
-          # データ取得
-          list = m.constantize.send(:new).run do |data|
-            puts "data: #{data}" if @debug
-          end
-          # カレンダー登録
-          cal = calendar
-          data = cal.unregistered list
-          cal.save data
-          # Twitter投稿
-          tweet_to data
-        rescue => e
-          puts e.message
+    def crawler(name)
+      begin
+        # データ取得
+        list = load_module(name).constantize.send(:new).run do |data|
+          puts "data: #{data}" if @debug
         end
+        # カレンダー登録
+        cal = calendar
+        data = cal.unregistered list
+        cal.save data
+        # Twitter投稿
+        tweet_to data
+      rescue => e
+        puts e.message
       end
     end
     
     # 起動する
     def run(config)
       @debug = config[:debug]
-      yield clock
+      c = clock
+      module_list.each do |module_name|
+        schedule = c[module_name] || c["default"]
+        if schedule.instance_of? Array
+          schedule.each {|s| yield module_name, s}
+        else
+          yield module_name, schedule
+        end
+      end
     end
   end
 end

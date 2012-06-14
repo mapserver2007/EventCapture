@@ -20,9 +20,9 @@ module EventCapture
       yield url if block_given?
     end
     
-    def dm(msg)
+    def dm(user, msg)
       msg = msg.to_s.force_encoding(Encoding::ASCII_8BIT)
-      result = @client.direct_message_create(@user, msg)
+      result = @client.direct_message_create(user, msg)
       yield result["text"] if block_given?
     end
 

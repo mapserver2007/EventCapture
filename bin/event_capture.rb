@@ -11,15 +11,11 @@ OptionParser.new do |opt|
   opt.parse!
 end
 
-EventCapture.run(config) do |clock|
+EventCapture.run(config) do |module_name, schedule|
   handler do |job| 
     # 短期間にジョブが実行される場合、待ちによりキューが溜まり続ける
     # ため、スレッドで並列実行する
-    Thread.new {job.crawler}
+    Thread.new {EventCapture.crawler job}
   end
-  unless clock["interval"].nil?
-    every(clock["interval"].seconds, EventCapture)
-  else
-    every(1.day, EventCapture, :at => clock["schedule"])
-  end
+  every(1.day, module_name, :at => schedule)
 end
