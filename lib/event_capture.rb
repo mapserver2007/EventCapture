@@ -61,7 +61,7 @@ module EventCapture
           data = data.values.reject{|e| e == ""}
           context = data.join(", ") + "\s#{tag}"
           @twitter.post(context) {|url| puts "twitter: #{url}" if @debug}
-          @twitter.dm(@user, context) {|url| puts "DM: #{text}" if @debug}
+          @twitter.dm(@user, context) {|text| puts "DM: #{text}" if @debug}
         rescue Twitter::Error::Forbidden
           next
         end
