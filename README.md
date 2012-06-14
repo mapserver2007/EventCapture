@@ -12,8 +12,10 @@ config/gcal.sample.ymlをgcal.ymlに、config/twitter.sample.ymlをtwitter.yml�
 
 ###実行時間または時刻を設定
 config/clock.ymlに実行する時間または時刻を設定します。  
-
-    schedule="19:00"
+####全てのモジュール共通
+    default="19:00"
+####モジュールごと個別
+    module_name="8:45"
 
 ###プロセスを起動
 
