@@ -1,3 +1,8 @@
 # schedule of execute
 default: "8:45"
-eroge: "18:00"
+eroge:
+  - "18:00"
+  - "18:05"
+runnet:
+  - "8:45"
+  - "8:50"
