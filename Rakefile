@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+$: << File.dirname(__FILE__) + "/lib"
+require 'event_capture'
 require 'rspec/core/rake_task'
 require 'yaml'
 
@@ -24,4 +26,8 @@ task :heroku_env do
   config.each do |key, value|
     sh "heroku config:add #{key}=#{value}"
   end
+end
+
+task :schedule_delete do
+  EventCapture.schedule_delete
 end

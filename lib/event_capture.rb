@@ -37,7 +37,7 @@ module EventCapture
     
     # カレンダーオブジェクト作成
     def calendar
-      path = File.dirname(__FILE__) + "/../config/auth.yml"
+      path = File.dirname(__FILE__) + "/../config/gcal.yml"
       auth = load_config(path)
       Calendar.new(auth["mail"], auth["pass"], @debug)
     end
@@ -46,14 +46,14 @@ module EventCapture
     def twitter
       path = File.dirname(__FILE__) + "/../config/twitter.yml"
       auth = load_config(path)
-      @user = auth[:send_to]
+      @user = auth["send_to"]
       Tweet.new(auth)
     end
     
     # ツイート
     def tweet_to(list)
       @twitter = twitter
-      Runner.parallel do |data|
+      Runner.parallel(list) do |data|
         begin
           data[:date] = data[:date].join("/")
           tag = data[:tag]
@@ -73,7 +73,7 @@ module EventCapture
       begin
         # データ取得
         list = load_module(name).constantize.send(:new).run do |data|
-          puts "data: #{data}" if @debug
+          puts "data: #{data[:title]}" if @debug
         end
         # カレンダー登録
         cal = calendar
@@ -84,6 +84,10 @@ module EventCapture
       rescue => e
         puts e.message
       end
+    end
+    
+    def schedule_delete
+      calendar.delete_all
     end
     
     # 起動する

@@ -11,17 +11,22 @@ module EventCapture
       @calendar = GoogleCalendar::Calendar.new(
         GoogleCalendar::Service.new(mail, pass), feed
       )
+      @cond = {
+        "max-results" => 999,
+        "orderby" => "starttime",
+        "sortorder" => "descending"
+      }
     end
     
     def unregistered(list)
       title_queue = []
       list.each {|data| title_queue << data[:title]}
       # すでに登録済みのイベントならQueueにセットしない
-      @calendar.events.each do |event|
+      @calendar.events(@cond).each do |event|
         index = title_queue.index(event.title)
         unless index.nil?
-          list.delete_at index
           title_queue.delete_at index
+          list.delete_at index
         end
       end
       list
@@ -45,14 +50,21 @@ module EventCapture
     def delete(list)
       title_queue = []
       list.each {|data| title_queue << data[:title]}
-      @calendar.events do |event|
+      @calendar.events(@cond).each do |event|
         index = title_queue.index(event.title)
         unless index.nil?
+          puts "delete: #{event.title}" if @is_print
           event.destroy!
-          puts "delete: #{e}" if @is_print
         end
       end
       true
+    end
+    
+    def delete_all
+      @calendar.events(@cond).each do |event|
+        puts "delete: #{event.title}"
+        event.destroy!
+      end
     end
   end
 end
