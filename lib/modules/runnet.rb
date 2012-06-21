@@ -19,7 +19,7 @@ module EventCaptureModule
       url_list = []
       1.upto(MAX_PAGE) {|page| url_list << NEW_ENTRY_URL % page }
       # 並列で取得
-      url_list.each_with_parallel do |url|
+      url_list.each_parallel do |url|
         crawle_to url
       end
       @result.each {|data| yield data if block_given?}

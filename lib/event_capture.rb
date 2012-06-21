@@ -53,7 +53,7 @@ module EventCapture
     # ツイート
     def tweet_to(list)
       @twitter = twitter
-      list.each_with_parallel do |data|
+      list.each_parallel do |data|
         begin
           data[:date] = data[:date].join("/")
           tag = data[:tag]
