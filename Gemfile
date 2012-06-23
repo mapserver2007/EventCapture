@@ -1,4 +1,4 @@
-source :rubygems
+source "http://rubygems.org"
 gem 'sinatra'
 gem 'shotgun'
 gem 'rspec', '>=2.10.0'
