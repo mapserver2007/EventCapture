@@ -28,7 +28,7 @@ GEM
     net-http-persistent (2.6)
     nokogiri (1.5.3)
     ntlm-http (0.1.1)
-    parallel_runner (0.0.1)
+    parallel_runner (0.0.3)
     rack (1.4.1)
     rack-protection (1.2.0)
       rack
@@ -67,7 +67,7 @@ DEPENDENCIES
   gcalapi
   httpclient
   mechanize
-  parallel_runner
+  parallel_runner (>= 0.0.3)
   rspec (>= 2.10.0)
   shotgun
   sinatra
