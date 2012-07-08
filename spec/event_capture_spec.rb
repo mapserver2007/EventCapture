@@ -33,7 +33,6 @@ describe EventCapture, 'が実行する処理' do
       list = EventCapture.load_module(m).constantize.send(:new).run
       list.should_not be_empty
       list.each do |data|
-        p data[:date]
         data[:title].should_not be_nil
         data[:desc].should_not be_nil
         data[:where].should_not be_nil
