@@ -9,7 +9,7 @@ module EventCaptureModule
     # とらのあな - CD今日のランキング
     URL = ROOT_URL + '/mailorder/mcd/ranking/daily.html'
     # 何位まで取得するか
-    MAX_RANK_NUM = 1
+    MAX_RANK_NUM = 10
     
     def initialize
       @result = []
