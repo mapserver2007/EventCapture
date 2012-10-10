@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 $: << File.dirname(__FILE__) + "/../lib"
 require 'event_capture'
+require 'mylogger'
 require 'optparse'
 require 'clockwork'
 include Clockwork
@@ -10,6 +11,9 @@ OptionParser.new do |opt|
   opt.on('-d', '--debug') {|boolean| config[:debug] = boolean}
   opt.parse!
 end
+
+auth_token = EventCapture.evernote_auth_token['auth_token']
+MyLogger.auth_token = auth_token
 
 EventCapture.run(config) do |module_name, schedule|
   handler do |job| 

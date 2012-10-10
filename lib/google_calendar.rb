@@ -12,7 +12,7 @@ module EventCapture
         GoogleCalendar::Service.new(mail, pass), feed
       )
       @cond = {
-        "max-results" => 999,
+        "max-results" => 9999,
         "orderby" => "starttime",
         "sortorder" => "descending"
       }

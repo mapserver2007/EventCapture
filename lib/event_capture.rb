@@ -49,6 +49,12 @@ module EventCapture
       @user = auth["send_to"]
       Tweet.new(auth)
     end
+
+    # Evernote認証情報
+    def evernote_auth_token
+      path = File.dirname(__FILE__) + "/../config/evernote.auth.yml"
+      load_config(path)
+    end
     
     # ツイート
     def tweet_to(list)
@@ -74,6 +80,7 @@ module EventCapture
         # データ取得
         list = load_module(name).constantize.send(:new).run do |data|
           puts "data: #{data[:title]}" if @debug
+          MyLogger.info("#{name}: #{data[:title]}")
         end
         # カレンダー登録
         cal = calendar
