@@ -76,6 +76,8 @@ module EventCapture
     
     # クローラ
     def crawler(name)
+      auth_token = evernote_auth_token['auth_token']
+      MyLogger.auth_token = auth_token
       begin
         # データ取得
         list = load_module(name).constantize.send(:new).run do |data|
