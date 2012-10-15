@@ -12,9 +12,6 @@ OptionParser.new do |opt|
   opt.parse!
 end
 
-auth_token = EventCapture.evernote_auth_token['auth_token']
-MyLogger.auth_token = auth_token
-
 EventCapture.run(config) do |module_name, schedule|
   handler do |job| 
     # 短期間にジョブが実行される場合、待ちによりキューが溜まり続ける
