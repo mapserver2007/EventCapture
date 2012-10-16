@@ -14,7 +14,7 @@ GEM
     gcalapi (0.1.2)
     httpclient (2.2.5)
     i18n (0.6.0)
-    log4ever (0.0.6)
+    log4ever (0.0.7)
       log4r (>= 1.1.10)
     log4r (1.1.10)
     mechanize (2.5.1)
@@ -71,7 +71,7 @@ DEPENDENCIES
   gcalapi
   httpclient
   i18n
-  log4ever (>= 0.0.6)
+  log4ever (>= 0.0.7)
   mechanize
   parallel_runner (>= 0.0.3)
   rspec (>= 2.10.0)
