@@ -22,7 +22,8 @@ end
 task :heroku_env do
   gcal = YAML.load_file(File.dirname(__FILE__) + "/config/gcal.yml")
   twitter = YAML.load_file(File.dirname(__FILE__) + "/config/twitter.yml")
-  config = gcal.merge(twitter)
+  evernote = YAML.load_file(File.dirname(__FILE__) + "/config/evernote.auth.yml")
+  config = gcal.merge(twitter).merge(evernote)
   config.each do |key, value|
     sh "heroku config:add #{key}=#{value}"
   end
